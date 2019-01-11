@@ -38,6 +38,13 @@ Returns the CPU info by using the best sources of information for your OS.
 Returns {} if nothing is found.
 '''
 get_cpu_info()
+
+'''
+Returns the CPU info by using the best sources of information for your OS.
+This function is designed to work when not using a __main__ in your program.
+Returns {} if nothing is found.
+'''
+get_cpu_info_no_main()
 ~~~
 
 
@@ -109,7 +116,7 @@ if __name__ == '__main__':
     print(info)
 ~~~
 
-Run as a library with out main
+Run as a library without main
 -----
 ~~~python
 import cpuinfo
