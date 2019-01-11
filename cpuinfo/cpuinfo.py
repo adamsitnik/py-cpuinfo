@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-# Copyright (c) 2014-2018, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
+# Copyright (c) 2014-2019, Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 # Py-cpuinfo gets CPU info with pure Python 2 & 3
 # It uses the MIT License
 # It is hosted at: https://github.com/workhorsy/py-cpuinfo
@@ -29,6 +29,7 @@ CPUINFO_VERSION = (4, 0, 0)
 
 import os, sys
 import glob
+import json
 import re
 import time
 import platform
@@ -2154,6 +2155,29 @@ def get_cpu_info():
 
 	return info
 
+# FIXME: Make this to fix bug # 108
+def get_cpu_info_no_main():
+	'''
+	Returns the CPU info by using the best sources of information for your OS.
+	This function is designed to work when not using a __main__ in your program.
+	Returns {} if nothing is found.
+	'''
+	# FIXME: Having the path and file name hard coded here is a very bad idea
+	command = [sys.executable, 'cpuinfo/cpuinfo.py', '--json']
+	p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+	output = p1.communicate()[0]
+	if not PY2:
+		output = output.decode(encoding='UTF-8')
+
+	if p1.returncode == 0:
+		# FIXME: This converts all strings to unicode stirngs
+		output = json.loads(output)
+		return output
+	else:
+		return {}
+
+
+
 # Make sure we are running on a supported system
 def _check_arch():
 	arch, bits = parse_arch(DataSource.raw_arch_string)
@@ -2161,6 +2185,14 @@ def _check_arch():
 		raise Exception("py-cpuinfo currently only works on X86 and some PPC and ARM CPUs.")
 
 def main():
+	import argparse
+
+	# Parse args
+	# FIXME: Make adding json support a new bug
+	parser = argparse.ArgumentParser(description='Gets CPU info with pure Python 2 & 3')
+	parser.add_argument('--json', action='store_true', help='Return the info in JSON format')
+	args = parser.parse_args()
+
 	try:
 		_check_arch()
 	except Exception as err:
@@ -2168,7 +2200,14 @@ def main():
 		sys.exit(1)
 
 	info = get_cpu_info()
-	if info:
+
+	if not info:
+		sys.stderr.write("Failed to find cpu info\n")
+		sys.exit(1)
+
+	if args.json:
+		print(json.dumps(info))
+	else:
 		print('Python Version: {0}'.format(info.get('python_version', '')))
 		print('Cpuinfo Version: {0}'.format(info.get('cpuinfo_version', '')))
 		print('Vendor ID: {0}'.format(info.get('vendor_id', '')))
@@ -2197,9 +2236,6 @@ def main():
 		print('Extended Model: {0}'.format(info.get('extended_model', '')))
 		print('Extended Family: {0}'.format(info.get('extended_family', '')))
 		print('Flags: {0}'.format(', '.join(info.get('flags', ''))))
-	else:
-		sys.stderr.write("Failed to find cpu info\n")
-		sys.exit(1)
 
 
 if __name__ == '__main__':

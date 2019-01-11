@@ -100,13 +100,21 @@ Run as a module
 $ python -m cpuinfo
 ~~~
 
-Run as a library
+Run as a library with main
 -----
 ~~~python
 if __name__ == '__main__':
     import cpuinfo
     info = cpuinfo.get_cpu_info()
     print(info)
+~~~
+
+Run as a library with out main
+-----
+~~~python
+import cpuinfo
+info = cpuinfo.get_cpu_info_no_main()
+print(info)
 ~~~
 
 Run under Pyinstaller
