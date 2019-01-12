@@ -2095,7 +2095,7 @@ def CopyNewFields(info, new_info):
 				if f not in info['flags']: info['flags'].append(f)
 			info['flags'].sort()
 
-def get_cpu_info():
+def _get_cpu_info_internal():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
 	Returns {} if nothing is found.
@@ -2156,10 +2156,9 @@ def get_cpu_info():
 	return info
 
 # FIXME: Make this to fix bug # 108
-def get_cpu_info_no_main():
+def get_cpu_info():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
-	This function is designed to work when not using a __main__ in your program.
 	Returns {} if nothing is found.
 	'''
 
@@ -2175,8 +2174,6 @@ def get_cpu_info_no_main():
 		output = output.decode(encoding='UTF-8')
 	output = json.loads(output)
 	return output
-
-
 
 # Make sure we are running on a supported system
 def _check_arch():
@@ -2199,7 +2196,7 @@ def main():
 		sys.stderr.write(str(err) + "\n")
 		sys.exit(1)
 
-	info = get_cpu_info()
+	info = _get_cpu_info_internal()
 
 	if not info:
 		sys.stderr.write("Failed to find cpu info\n")

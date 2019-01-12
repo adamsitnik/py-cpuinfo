@@ -38,13 +38,6 @@ Returns the CPU info by using the best sources of information for your OS.
 Returns {} if nothing is found.
 '''
 get_cpu_info()
-
-'''
-Returns the CPU info by using the best sources of information for your OS.
-This function is designed to work when not using a __main__ in your program.
-Returns {} if nothing is found.
-'''
-get_cpu_info_no_main()
 ~~~
 
 
@@ -107,21 +100,13 @@ Run as a module
 $ python -m cpuinfo
 ~~~
 
-Run as a library with main
+Run as a library
 -----
 ~~~python
 if __name__ == '__main__':
     import cpuinfo
     info = cpuinfo.get_cpu_info()
     print(info)
-~~~
-
-Run as a library without main
------
-~~~python
-import cpuinfo
-info = cpuinfo.get_cpu_info_no_main()
-print(info)
 ~~~
 
 Run under Pyinstaller
