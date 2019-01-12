@@ -2162,8 +2162,8 @@ def get_cpu_info_no_main():
 	This function is designed to work when not using a __main__ in your program.
 	Returns {} if nothing is found.
 	'''
-	# FIXME: Having the path and file name hard coded here is a very bad idea
-	command = [sys.executable, 'cpuinfo/cpuinfo.py', '--json']
+
+	command = [sys.executable, __file__, '--json']
 	p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 	output = p1.communicate()[0]
 
