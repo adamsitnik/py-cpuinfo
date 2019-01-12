@@ -2166,15 +2166,15 @@ def get_cpu_info_no_main():
 	command = [sys.executable, 'cpuinfo/cpuinfo.py', '--json']
 	p1 = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 	output = p1.communicate()[0]
+
+	if p1.returncode != 0:
+		return {}
+
+	# FIXME: This converts all strings to unicode stirngs
 	if not PY2:
 		output = output.decode(encoding='UTF-8')
-
-	if p1.returncode == 0:
-		# FIXME: This converts all strings to unicode stirngs
-		output = json.loads(output)
-		return output
-	else:
-		return {}
+	output = json.loads(output)
+	return output
 
 
 
