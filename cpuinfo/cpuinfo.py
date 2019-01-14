@@ -2096,13 +2096,13 @@ def CopyNewFields(info, new_info):
 			info['flags'].sort()
 
 def _utf_to_str(input):
-	if isinstance(input, dict):
-		return {_utf_to_str(key): _utf_to_str(value)
-			for key, value in input.iteritems()}
+	if isinstance(input, unicode):
+		return input.encode('utf-8')
 	elif isinstance(input, list):
 		return [_utf_to_str(element) for element in input]
-	elif isinstance(input, unicode):
-		return input.encode('utf-8')
+	elif isinstance(input, dict):
+		return {_utf_to_str(key): _utf_to_str(value)
+			for key, value in input.iteritems()}
 	else:
 		return input
 
