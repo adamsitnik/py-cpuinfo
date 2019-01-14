@@ -2095,6 +2095,17 @@ def CopyNewFields(info, new_info):
 				if f not in info['flags']: info['flags'].append(f)
 			info['flags'].sort()
 
+def _utf_to_str(input):
+	if isinstance(input, dict):
+		return {_utf_to_str(key): _utf_to_str(value)
+			for key, value in input.iteritems()}
+	elif isinstance(input, list):
+		return [_utf_to_str(element) for element in input]
+	elif isinstance(input, unicode):
+		return input.encode('utf-8')
+	else:
+		return input
+
 def _get_cpu_info_internal():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
@@ -2169,10 +2180,12 @@ def get_cpu_info():
 	if p1.returncode != 0:
 		return {}
 
-	# FIXME: This converts all strings to unicode stirngs
 	if not PY2:
 		output = output.decode(encoding='UTF-8')
-	output = json.loads(output)
+
+	# Convert JSON to Python with non unicode strings
+	output = json.loads(output, object_hook = _utf_to_str)
+
 	return output
 
 # Make sure we are running on a supported system
