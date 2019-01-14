@@ -2167,7 +2167,7 @@ def _get_cpu_info_internal():
 	return info
 
 # FIXME: Make this to fix bug # 108
-def get_cpu_info():
+def get_cpu_info_json():
 	'''
 	Returns the CPU info by using the best sources of information for your OS.
 	Returns {} if nothing is found.
@@ -2182,6 +2182,16 @@ def get_cpu_info():
 
 	if not PY2:
 		output = output.decode(encoding='UTF-8')
+
+	return output
+
+def get_cpu_info():
+	'''
+	Returns the CPU info by using the best sources of information for your OS.
+	Returns {} if nothing is found.
+	'''
+
+	output = get_cpu_info_json()
 
 	# Convert JSON to Python with non unicode strings
 	output = json.loads(output, object_hook = _utf_to_str)
